@@ -31,11 +31,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 function loadUserData(){
     //Array
-    let listUser = []; 
+    let listUser = [];
 
     //capturando os valores e colocando eles dentro de um objeto (userData)
     const userData = {
         //capturando os valores e colocando eles dentro das propriedades ou também atributos
+        id: (Math.random() * 100).toFixed(),
         name: document.getElementById('name').value,
         email: document.getElementById('email').value,
         cel: document.getElementById('cel').value,
@@ -60,7 +61,6 @@ const loadUserDataList = () => {
         let template = "";
 
         listUsers.forEach(user => {
-            var ++;
             template += `
                 <tr>
                     <td>${user.name}</td>
@@ -68,7 +68,7 @@ const loadUserDataList = () => {
                     <td>${user.cel}</td>
                     <td>${user.city}</td>
                     <td>
-                        <button type="button" class="button green" onclick="editUserData(${listUsers.findindex()})">Editar</button>
+                        <button type="button" class="button green" onclick="editUserData(${user.id})">Editar</button>
                         <button type="button" class="button red">Excluir</button>
                     </td>
                 </tr>    
@@ -83,6 +83,51 @@ const loadUserDataList = () => {
 
 
 
-function editUserData(){
-    tableData.innerHTML = template;
+function editUserData(id){
+
+    const saveButton = document.getElementById('modalFooterID');
+    let template = `
+        <footer class="modalFooter">
+            <button class="button green" id="saveValues2">
+                Salvar
+            </button>
+            <button class="button red" id="cancelSave">
+                Cancelar
+            </button>
+        </footer>
+        `;
+    
+    saveButton.innerHTML = template;
+
+    
+
+    const editModal = document.getElementById('modalHeader');
+    editModal.innerHTML =  `<h2>
+                                Editar Usuário
+                            </h2>`;
+    modalOpen();
+
+    const listUsers = JSON.parse(localStorage.getItem('users'));
+    //Método find para validar se o email que o usuário informou está dentro do meu array de usuários
+    const userHunter = listUsers.find(user =>
+        user.id == id
+    );
+
+    document.getElementById('name').value = userHunter.name;
+    document.getElementById('email').value = userHunter.email;
+    document.getElementById('cel').value = userHunter.cel;
+    document.getElementById('city').value = userHunter.city;
+
+    //Substitui os dados antigos pelos novos
+    document.getElementById('cancelSave').addEventListener('click', () => {
+        modalClose()
+        window.location.reload()
+    });
+    document.getElementById('saveValues2').addEventListener('click', () => {
+        userHunter.name = document.getElementById('name').value;
+        userHunter.email = document.getElementById('email').value;
+        userHunter.cel = document.getElementById('cel').value;
+        userHunter.city = document.getElementById('city').value;
+        window.location.reload();
+    });
 }
